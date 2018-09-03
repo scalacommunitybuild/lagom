@@ -11,6 +11,7 @@ import akka.actor.CoordinatedShutdown
 import akka.{ Done, NotUsed }
 import com.lightbend.lagom.internal.javadsl.registry.{ ServiceRegistry, ServiceRegistryService }
 import com.lightbend.lagom.internal.javadsl.server.ResolvedServices
+import com.lightbend.lagom.internal.registry.LagomConfig
 import com.typesafe.config.Config
 import javax.inject.{ Inject, Provider, Singleton }
 import play.api.inject.{ Binding, Module }
@@ -31,20 +32,7 @@ class ServiceRegistrationModule extends Module {
 object ServiceRegistrationModule {
 
   class ServiceConfigProvider @Inject() (config: Config) extends Provider[ServiceConfig] {
-
-    // This code is similar to `ServiceRegistration` in project `dev-mode-scala`
-    // and `PlayRegisterWithServiceRegistry` in project `play-integration-javadsl
-    override lazy val get = {
-      // In dev mode, `play.server.http.address` is used for both HTTP and HTTPS.
-      // Reading one value or the other gets the same result.
-      val httpAddress = config.getString("play.server.http.address")
-      val uris = List("http", "https").map { scheme =>
-        val port = config.getString(s"play.server.$scheme.port")
-        new URI(s"$scheme://$httpAddress:$port")
-      }
-
-      ServiceConfig(uris)
-    }
+    override lazy val get = ServiceConfig(LagomConfig.uris(config))
   }
 
   case class ServiceConfig(uris: immutable.Seq[URI])

@@ -4,11 +4,9 @@
 
 package com.lightbend.lagom.internal.scaladsl.registry
 
-import java.net.URI
-
 import akka.Done
 import akka.actor.CoordinatedShutdown
-import com.lightbend.lagom.scaladsl.api.ServiceAcl
+import com.lightbend.lagom.internal.registry.LagomConfig
 import com.lightbend.lagom.scaladsl.api.ServiceInfo
 import com.typesafe.config.Config
 import play.api.Logger
@@ -23,18 +21,9 @@ class ServiceRegistration(
   registry:            ServiceRegistry
 )(implicit ec: ExecutionContext) {
 
-  // This code is similar to `ServerRegistrationModule` in project `registration-javadsl`
-  // and `PlayRegisterWithServiceRegistry` in project `play-integration-javadsl
-
   private val logger: Logger = Logger(this.getClass)
 
-  // In dev mode, `play.server.http.address` is used for both HTTP and HTTPS.
-  // Reading one value or the other gets the same result.
-  private val httpAddress = config.getString("play.server.http.address")
-  private val uris = List("http", "https").map { scheme =>
-    val port = config.getString(s"play.server.$scheme.port")
-    new URI(s"$scheme://$httpAddress:$port")
-  }
+  private val uris = LagomConfig.uris(config)
 
   coordinatedShutdown.addTask(CoordinatedShutdown.PhaseBeforeServiceUnbind, "unregister-services-from-service-locator-scaladsl") { () =>
     Future.sequence(serviceInfo.locatableServices.map {

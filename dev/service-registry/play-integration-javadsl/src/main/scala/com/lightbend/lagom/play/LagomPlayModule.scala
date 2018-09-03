@@ -4,12 +4,12 @@
 
 package com.lightbend.lagom.play
 
-import java.net.URI
 import java.util.{ List => JList }
 import java.util.Optional
 import javax.inject.Inject
 
 import com.lightbend.lagom.internal.javadsl.registry.{ ServiceRegistry, ServiceRegistryService }
+import com.lightbend.lagom.internal.registry.LagomConfig
 import com.lightbend.lagom.javadsl.api.{ ServiceAcl, ServiceInfo }
 import com.lightbend.lagom.javadsl.api.transport.Method
 import com.typesafe.config.Config
@@ -82,17 +82,7 @@ class PlayRegisterWithServiceRegistry @Inject() (config: Config, serviceInfo: Se
            applicationLifecycle: ApplicationLifecycle) =
     this(config.underlying, serviceInfo, serviceRegistry, applicationLifecycle)
 
-  // This code is similar to `ServerRegistrationModule` in project `registration-javadsl`
-  // and  `ServiceRegistration` in project `dev-mode-scala`
-
-  // In dev mode, `play.server.http.address` is used for both HTTP and HTTPS.
-  // Reading one value or the other gets the same result.
-  private val httpAddress = config.getString("play.server.http.address")
-  val uris = List("http", "https").map { scheme =>
-    val port = config.getString(s"play.server.$scheme.port")
-    new URI(s"$scheme://$httpAddress:$port")
-  }
-
+  val uris = LagomConfig.uris(config)
   private val serviceAcls = serviceInfo.getAcls
   private val service = ServiceRegistryService.of(uris.asJava, serviceAcls)
   // TODO: fix -> this register operation is registering all ACLs under the microservice name, not under each locatable service name. Will lead to unlocatable.

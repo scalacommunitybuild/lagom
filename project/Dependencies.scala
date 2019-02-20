@@ -14,7 +14,7 @@ object Dependencies {
     val Scala210 = "2.10.7"
     val Scala211 = "2.11.12"
     val Scala212 = "2.12.8"
-    val Scala213 = "2.13.0-M3"
+    val Scala213 = "2.13.0-M5"
     val Scala = Seq(Scala212, Scala213, Scala211)
     val SbtScala = Seq(Scala212, Scala210)
 
@@ -35,7 +35,8 @@ object Dependencies {
 
     val Disruptor = "3.3.11"
 
-    val ScalaTest = "3.0.5"
+    // Also be sure to update ScalaTestVersion in docs/build.sbt.
+    val ScalaTest = "3.0.6-SNAP6"
     val Jackson = "2.9.8"
     val JacksonCore = Jackson
     val JacksonDatatype = Jackson

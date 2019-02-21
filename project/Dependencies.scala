@@ -635,6 +635,7 @@ object Dependencies {
     scalaParserCombinators,
     scalaXml,
     akkaSlf4j,
+    playJson,
 
     // transitive dependencies from Akka Management
     // may not match the Akka version in use so
@@ -942,7 +943,8 @@ object Dependencies {
     akkaSlf4j,
     typesafeConfig,
     sslConfig,
-    scalaXml
+    scalaXml,
+    playJson,
   )
 
   val `service-registry-client-core` =

@@ -129,7 +129,7 @@ object Dependencies {
   private val akkaHttpSprayJson = "com.typesafe.akka" %% "akka-http-spray-json" % Versions.AkkaHttp
   private val akkaParsing = "com.typesafe.akka" %% "akka-parsing" % Versions.AkkaHttp
 
-  private val sprayJson = "io.spray" %% "spray-json" % "1.3.5"
+  private val sprayJson = "io.spray" %% "spray-json" % "1.3.5" force()
 
   private val play = "com.typesafe.play" %% "play" % Versions.Play excludeAll (excludeSlf4j: _*)
   private val playBuildLink = "com.typesafe.play" % "build-link" % Versions.Play excludeAll (excludeSlf4j: _*)
@@ -636,6 +636,7 @@ object Dependencies {
     scalaXml,
     akkaSlf4j,
     playJson,
+    sprayJson,
 
     // transitive dependencies from Akka Management
     // may not match the Akka version in use so

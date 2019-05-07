@@ -29,7 +29,7 @@ object Dependencies {
     val AkkaHttp = "10.1.8"
     val Aeron = "1.15.1"
 
-    val AkkaPersistenceCassandra = "0.61"
+    val AkkaPersistenceCassandra = "0.62-SNAPSHOT"
     val AkkaPersistenceJdbc = "3.5.0"
     val AkkaManagement = "1.0.0"
 

@@ -4,12 +4,14 @@
 
 package com.lightbend.lagom.scaladsl.api.deser
 
+import scala.language.higherKinds
+
 import java.util.UUID
 
+import scala.collection.Factory
 import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable
 import scala.collection.immutable.Seq
-import scala.language.higherKinds
 
 /**
  * A path param serializer is responsible for serializing and deserializing parameters that are extracted from and
@@ -112,7 +114,7 @@ trait LowPriorityPathParamSerializers {
   /**
    * A traversable path param serializer
    */
-  implicit def traversablePathParamSerializer[CC[X] <: Traversable[X], Param: PathParamSerializer](implicit delegate: PathParamSerializer[Param], bf: CanBuildFrom[Seq[_], Param, CC[Param]]): PathParamSerializer[CC[Param]] = {
+  implicit def traversablePathParamSerializer[CC[X] <: Traversable[X], Param: PathParamSerializer](implicit delegate: PathParamSerializer[Param], bf: Factory[Param, CC[Param]]): PathParamSerializer[CC[Param]] = {
 
     val name = delegate match {
       case named: NamedPathParamSerializer[_] => s"Traversable[${named.name}]"
@@ -121,12 +123,7 @@ trait LowPriorityPathParamSerializers {
 
     new NamedPathParamSerializer[CC[Param]](name) {
       override def serialize(parameter: CC[Param]): Seq[String] = parameter.flatMap(delegate.serialize).toSeq
-      override def deserialize(parameters: Seq[String]): CC[Param] = {
-        val builder = bf(parameters)
-        builder.sizeHint(parameters)
-        builder ++= parameters.map(param => delegate.deserialize(Seq(param)))
-        builder.result()
-      }
+      override def deserialize(parameters: Seq[String]): CC[Param] = bf.fromSpecific(parameters.iterator.map(param => delegate.deserialize(Seq(param))))
     }
   }
 }

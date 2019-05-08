@@ -125,7 +125,7 @@ abstract class LagomApplicationLoader extends ApplicationLoader with ServiceDisc
    * service, or split into multiple service projects.
    */
   @deprecated("Binding multiple locatable ServiceDescriptors per Lagom service is unsupported. Override LagomApplicationLoader.describeService() instead", "1.3.3")
-  def describeServices: immutable.Seq[Descriptor] = describeService.to[immutable.Seq]
+  def describeServices: immutable.Seq[Descriptor] = describeService.to(immutable.Seq)
 
   override final def discoverServices(classLoader: ClassLoader) = {
     import scala.collection.JavaConverters._

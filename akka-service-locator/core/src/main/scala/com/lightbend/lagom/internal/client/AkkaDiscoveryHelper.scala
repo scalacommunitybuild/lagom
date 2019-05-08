@@ -36,7 +36,7 @@ private[lagom] class AkkaDiscoveryHelper(config: Config, serviceDiscovery: Servi
     serviceDiscovery
       .lookup(serviceLookup.lookup, lookupTimeout)
       .map { resolved =>
-        logger.debug("Retrieved addresses: {}", resolved.addresses)
+        logger.debug("Retrieved addresses: {}", resolved.addresses: Any)
         resolved.addresses.map(target => toURI(target, serviceLookup))
       }
   }

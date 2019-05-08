@@ -243,7 +243,7 @@ private[lagom] abstract class ServiceRouter(httpConfiguration: HttpConfiguration
    */
   private def toLagomRequestHeader(rh: PlayRequestHeader): RequestHeader = {
     val stringToTuples: Map[String, immutable.Seq[(String, String)]] = rh.headers.toMap.map {
-      case (key, values) => key.toLowerCase(Locale.ENGLISH) -> values.map(key -> _).to[immutable.Seq]
+      case (key, values) => key.toLowerCase(Locale.ENGLISH) -> values.map(key -> _).to(immutable.Seq)
     }
     newRequestHeader(
       newMethod(rh.method),
@@ -254,7 +254,7 @@ private[lagom] abstract class ServiceRouter(httpConfiguration: HttpConfiguration
           Some(s"${mediaType.mediaType}/${mediaType.mediaSubType}"),
           mediaType.parameters.find(_._1 == "charset").flatMap(_._2), None
         )
-      }.to[immutable.Seq],
+      }.to(immutable.Seq),
       None,
       stringToTuples
     )

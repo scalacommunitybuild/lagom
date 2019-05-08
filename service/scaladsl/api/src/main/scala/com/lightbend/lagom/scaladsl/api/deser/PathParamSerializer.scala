@@ -112,7 +112,7 @@ trait LowPriorityPathParamSerializers {
   /**
    * A traversable path param serializer
    */
-  implicit def traversablePathParamSerializer[CC[X] <: Traversable[X], Param: PathParamSerializer](implicit delegate: PathParamSerializer[Param], bf: CanBuildFrom[CC[_], Param, CC[Param]]): PathParamSerializer[CC[Param]] = {
+  implicit def traversablePathParamSerializer[CC[X] <: Traversable[X], Param: PathParamSerializer](implicit delegate: PathParamSerializer[Param], bf: CanBuildFrom[Seq[_], Param, CC[Param]]): PathParamSerializer[CC[Param]] = {
 
     val name = delegate match {
       case named: NamedPathParamSerializer[_] => s"Traversable[${named.name}]"
@@ -120,9 +120,9 @@ trait LowPriorityPathParamSerializers {
     }
 
     new NamedPathParamSerializer[CC[Param]](name) {
-      override def serialize(parameter: CC[Param]): Seq[String] = parameter.flatMap(delegate.serialize).to[Seq]
+      override def serialize(parameter: CC[Param]): Seq[String] = parameter.flatMap(delegate.serialize).toSeq
       override def deserialize(parameters: Seq[String]): CC[Param] = {
-        val builder = bf()
+        val builder = bf(parameters)
         builder.sizeHint(parameters)
         builder ++= parameters.map(param => delegate.deserialize(Seq(param)))
         builder.result()

@@ -4,6 +4,8 @@
 
 package com.lightbend.lagom.scaladsl.playjson
 
+import scala.collection.Seq
+
 import play.api.libs.json.{ JsPath, JsValue, Json, JsonValidationError }
 
 class JsonSerializationFailed private[lagom] (message: String, errors: Seq[(JsPath, Seq[JsonValidationError])], json: JsValue) extends RuntimeException {

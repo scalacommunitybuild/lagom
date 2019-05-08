@@ -276,7 +276,7 @@ abstract class PersistentEntity {
      * order as they are passed here.
      */
     def thenPersistAll(events: Event*)(afterPersist: () => Unit = () => ()): Persist =
-      PersistAll(events.to[immutable.Seq], afterPersist)
+      PersistAll(events.to(immutable.Seq), afterPersist)
 
     /**
      * A command handler may return this `Persist` directive to define

@@ -135,7 +135,7 @@ private[lagom] abstract class WebSocketClient(environment: Environment, config: 
             val headers = resp.headers().asScala.map { header =>
               header.getKey -> header.getValue
             }.groupBy(_._1.toLowerCase(Locale.ENGLISH)).map {
-              case (key, values) => key -> values.to[immutable.Seq]
+              case (key, values) => key -> values.to(immutable.Seq)
             }
 
             // See if the response is an error response

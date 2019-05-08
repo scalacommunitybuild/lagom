@@ -46,8 +46,8 @@ class ScaladslServiceRouter(override protected val descriptor: Descriptor, servi
 
     override def createServiceCall(params: Seq[Seq[String]]): ServiceCall[Any, Any] = {
       val args = params.zip(holder.pathParamSerializers).map {
-        case (params, serializer) => serializer.deserialize(params.to[immutable.Seq])
-      }.to[immutable.Seq]
+        case (params, serializer) => serializer.deserialize(params.to(immutable.Seq))
+      }.to(immutable.Seq)
 
       holder.invoke(service, args.asInstanceOf[immutable.Seq[AnyRef]]).asInstanceOf[ServiceCall[Any, Any]]
     }

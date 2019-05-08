@@ -95,7 +95,7 @@ private[lagom] class JdbcReadSideImpl(slick: SlickProvider, offsetStore: SlickOf
             }
             .getOrElse {
               // fallback to empty action if no handler is found
-              if (log.isDebugEnabled) log.debug("Unhandled event [{}]", element.event.getClass.getName)
+              if (log.isDebugEnabled) log.debug("Unhandled event [{}]", element.event.getClass.getName: Any)
               DBIO.successful(())
             }
             .flatMap { _ =>

@@ -90,7 +90,7 @@ private[lagom] class SlickReadSideImpl(slick: SlickProvider, offsetStore: SlickO
             }
             .getOrElse {
               // fallback to empty action if no handler is found
-              if (log.isDebugEnabled) log.debug("Unhandled event [{}]", element.event.getClass.getName)
+              if (log.isDebugEnabled) log.debug("Unhandled event [{}]", element.event.getClass.getName: Any)
               DBIO.successful(())
             }
             .flatMap { _ =>

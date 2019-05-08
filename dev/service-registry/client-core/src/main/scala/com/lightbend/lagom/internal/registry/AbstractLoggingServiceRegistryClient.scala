@@ -22,13 +22,13 @@ private[lagom] abstract class AbstractLoggingServiceRegistryClient(implicit ec: 
       serviceName != ServiceRegistryClient.ServiceName,
       "The service registry client cannot locate the service registry service itself"
     )
-    log.debug("Locating service name=[{}] ...", serviceName)
+    log.debug("Locating service name=[{}] ...", serviceName: Any)
 
     val location: Future[immutable.Seq[URI]] = internalLocateAll(serviceName, portName)
 
     location.onComplete {
       case Success(Nil) =>
-        log.warn("serviceName=[{}] was not found. Hint: Maybe it was not started?", serviceName)
+        log.warn("serviceName=[{}] was not found. Hint: Maybe it was not started?", serviceName: Any)
       case Success(uris) =>
         log.debug("serviceName=[{}] can be reached at uris=[{}]", serviceName: Any, uris: Any)
       case Failure(e) =>

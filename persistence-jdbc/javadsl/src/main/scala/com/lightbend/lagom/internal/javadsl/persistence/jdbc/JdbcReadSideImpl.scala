@@ -110,7 +110,7 @@ private[lagom] class JdbcReadSideImpl @Inject() (slick: SlickProvider, offsetSto
             }
             .getOrElse {
               // fallback to empty action if no handler is found
-              if (log.isDebugEnabled) log.debug("Unhandled event [{}]", pair.first.getClass.getName)
+              if (log.isDebugEnabled) log.debug("Unhandled event [{}]", pair.first.getClass.getName: Any)
               DBIO.successful(())
             }
             .flatMap { _ =>

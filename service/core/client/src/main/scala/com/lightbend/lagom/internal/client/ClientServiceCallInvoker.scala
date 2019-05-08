@@ -231,7 +231,7 @@ private[lagom] abstract class ClientServiceCallInvoker[Request, Response](
       // Create the message header
       val protocol = messageProtocolFromContentTypeHeader(response.header(HeaderNames.CONTENT_TYPE))
       val headers = response.headers.map {
-        case (key, values) => key.toLowerCase(Locale.ENGLISH) -> values.map(key -> _).to[immutable.Seq]
+        case (key, values) => key.toLowerCase(Locale.ENGLISH) -> values.map(key -> _).to(immutable.Seq)
       }
       val transportResponseHeader = newResponseHeader(response.status, protocol, headers)
       val responseHeader = headerFilterTransformClientResponse(headerFilter, transportResponseHeader, requestHeader)

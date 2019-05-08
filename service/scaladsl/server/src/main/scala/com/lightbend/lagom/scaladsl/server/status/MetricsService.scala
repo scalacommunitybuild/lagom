@@ -117,7 +117,7 @@ private class MetricsServiceImpl(circuitBreakerMetricsProvider: CircuitBreakerMe
             // might happen if the circuit breaker is removed, just ignore
             Nil
         }
-      }.to[immutable.Seq]
+      }.to(immutable.Seq)
   }
 
   private def circuitBreakerStatus(m: CircuitBreakerMetricsImpl): CircuitBreakerStatus = {

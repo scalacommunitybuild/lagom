@@ -289,7 +289,7 @@ object ServiceSupport {
   def getServiceCallMethodWithName[Request, Response](clazz: Class[_], name: String, pathParamSerializers: Seq[PathParamSerializer[_]]): ScalaMethodServiceCall[Request, Response] = {
     new ScalaMethodServiceCall[Request, Response](
       locateMethod(clazz, name),
-      pathParamSerializers.to[immutable.Seq]
+      pathParamSerializers.to(immutable.Seq)
     )
   }
 

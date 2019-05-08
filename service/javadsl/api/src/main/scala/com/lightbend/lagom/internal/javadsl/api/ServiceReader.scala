@@ -266,7 +266,7 @@ object ServiceReader {
           Nil
         } else {
           arguments.zip(serializers).map {
-            case (arg, serializer) => serializer.serialize(arg).asScala
+            case (arg, serializer) => serializer.serialize(arg).asScala.toSeq
           }
         }
       }

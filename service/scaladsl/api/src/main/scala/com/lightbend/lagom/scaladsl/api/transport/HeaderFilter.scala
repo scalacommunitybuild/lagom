@@ -81,7 +81,7 @@ object HeaderFilter {
    * @param filters The filters to create the composite filter from.
    * @return The composite filter.
    */
-  def composite(filters: HeaderFilter*): HeaderFilter = new Composite(filters.to[immutable.Seq])
+  def composite(filters: HeaderFilter*): HeaderFilter = new Composite(filters.to(immutable.Seq))
 
   /**
    * A composite header filter.

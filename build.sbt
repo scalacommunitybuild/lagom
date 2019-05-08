@@ -304,8 +304,6 @@ val javadslProjects = Seq[Project](
   `server-javadsl`,
   `client-javadsl`,
   `broker-javadsl`,
-  `kafka-client-javadsl`,
-  `kafka-broker-javadsl`,
   `akka-management-javadsl`,
   `akka-discovery-service-locator-javadsl`,
   `cluster-javadsl`,
@@ -317,15 +315,12 @@ val javadslProjects = Seq[Project](
   jackson,
   `testkit-javadsl`,
   immutables,
-  `integration-client-javadsl`
 )
 
 val scaladslProjects = Seq[Project](
   `api-scaladsl`,
   `client-scaladsl`,
   `broker-scaladsl`,
-  `kafka-client-scaladsl`,
-  `kafka-broker-scaladsl`,
   `server-scaladsl`,
   `akka-management-scaladsl`,
   `akka-discovery-service-locator-scaladsl`,
@@ -348,8 +343,6 @@ val coreProjects = Seq[Project](
   `akka-management-core`,
   `akka-discovery-service-locator-core`,
   `cluster-core`,
-  `kafka-client`,
-  `kafka-broker`,
   `persistence-core`,
   `persistence-testkit`,
   `persistence-cassandra-core`,
@@ -360,8 +353,6 @@ val coreProjects = Seq[Project](
 )
 
 val otherProjects = devEnvironmentProjects ++ Seq[Project](
-  `integration-tests-javadsl`,
-  `integration-tests-scaladsl`,
   `macro-testkit`
 )
 
@@ -489,13 +480,14 @@ lazy val `client-scaladsl` = (project in file("service/scaladsl/client"))
   .dependsOn(client, `api-scaladsl`, `macro-testkit` % Test)
 
 lazy val `integration-client-javadsl` = (project in file("service/javadsl/integration-client"))
-  .settings(
-    name := "lagom-javadsl-integration-client",
-    Dependencies.`integration-client-javadsl`
-  )
   .settings(runtimeLibCommon: _*)
   .settings(mimaSettings: _*)
   .enablePlugins(RuntimeLibPlugins)
+  .settings(
+    name := "lagom-javadsl-integration-client",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
+    Dependencies.`integration-client-javadsl`
+  )
   .dependsOn(`client-javadsl`, `service-registry-client-javadsl`, `kafka-client-javadsl`)
 
 lazy val server = (project in file("service/core/server"))
@@ -579,6 +571,7 @@ lazy val `testkit-scaladsl` = (project in file("testkit/scaladsl"))
   .settings(overridesScalaParserCombinators: _*)
   .settings(
     name := "lagom-scaladsl-testkit",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`testkit-scaladsl`
   )
   .dependsOn(
@@ -600,6 +593,7 @@ lazy val `integration-tests-javadsl` = (project in file("service/javadsl/integra
   .settings(
     name := "lagom-javadsl-integration-tests",
     Dependencies.`integration-tests-javadsl`,
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     PgpKeys.publishSigned := {},
     publish := {}
   )
@@ -619,6 +613,7 @@ lazy val `integration-tests-scaladsl` = (project in file("service/scaladsl/integ
   .settings(
     name := "lagom-scaladsl-integration-tests",
     Dependencies.`integration-tests-scaladsl`,
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     PgpKeys.publishSigned := {},
     publish := {}
   )
@@ -935,6 +930,7 @@ lazy val `kafka-client` = (project in file("service/core/kafka/client"))
   .settings(forkedTests: _*)
   .settings(
     name := "lagom-kafka-client",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`kafka-client`
   )
   .dependsOn(`api`)
@@ -945,27 +941,30 @@ lazy val `kafka-client-javadsl` = (project in file("service/javadsl/kafka/client
   .settings(mimaSettings: _*)
   .settings(
     name := "lagom-javadsl-kafka-client",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`kafka-client-javadsl`
   )
   .dependsOn(`api-javadsl`, `kafka-client`)
 
 lazy val `kafka-client-scaladsl` = (project in file("service/scaladsl/kafka/client"))
   .enablePlugins(RuntimeLibPlugins)
-  .settings(
-    name := "lagom-scaladsl-kafka-client",
-    Dependencies.`kafka-client-scaladsl`
-  )
   .settings(runtimeLibCommon: _*)
   .settings(mimaSettings: _*)
+  .settings(
+    name := "lagom-scaladsl-kafka-client",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
+    Dependencies.`kafka-client-scaladsl`
+  )
   .dependsOn(`api-scaladsl`, `kafka-client`)
 
 lazy val `kafka-broker` = (project in file("service/core/kafka/server"))
   .enablePlugins(RuntimeLibPlugins)
+  .settings(runtimeLibCommon: _*)
   .settings(
     name := "lagom-kafka-broker",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`kafka-broker`
   )
-  .settings(runtimeLibCommon: _*)
   .dependsOn(`api`, `persistence-core`, `kafka-client`)
 
 lazy val `kafka-broker-javadsl` = (project in file("service/javadsl/kafka/server"))
@@ -976,6 +975,7 @@ lazy val `kafka-broker-javadsl` = (project in file("service/javadsl/kafka/server
   .settings(excludeLog4jFromKafkaServer: _*)
   .settings(
     name := "lagom-javadsl-kafka-broker",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`kafka-broker-javadsl`,
     Dependencies.dependencyWhitelist ++= Dependencies.KafkaTestWhitelist
   )
@@ -996,6 +996,7 @@ lazy val `kafka-broker-scaladsl` = (project in file("service/scaladsl/kafka/serv
   .settings(excludeLog4jFromKafkaServer: _*)
   .settings(
     name := "lagom-scaladsl-kafka-broker",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`kafka-broker-scaladsl`,
     Dependencies.dependencyWhitelist ++= Dependencies.KafkaTestWhitelist
   )
@@ -1042,7 +1043,6 @@ lazy val devEnvironmentProjects = Seq[Project](
   `service-registry-client-javadsl`,
   `maven-java-archetype`,
   `maven-dependencies`,
-  `kafka-server`
 )
 
 lazy val `dev-environment` = (project in file("dev"))
@@ -1476,6 +1476,7 @@ lazy val `kafka-server` = (project in file("dev") / "kafka-server")
   .enablePlugins(RuntimeLibPlugins)
   .settings(
     name := "lagom-kafka-server",
+    crossScalaVersions -= Dependencies.Versions.Scala213,
     Dependencies.`kafka-server`
   )
 

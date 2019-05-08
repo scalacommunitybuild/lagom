@@ -33,7 +33,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static scala.collection.JavaConversions.asJavaIterable;
+import static scala.collection.JavaConverters.asJavaIterableConverter;
 
 @Singleton
 public class JpaReadSideImpl implements JpaReadSide {
@@ -169,7 +169,7 @@ public class JpaReadSideImpl implements JpaReadSide {
             String timeUuidOffset = offset instanceof Offset.TimeBasedUUID ?
                     ((Offset.TimeBasedUUID) offset).value().toString() : null;
             Iterable<String> sqlStatements =
-                    asJavaIterable(offsetDao.updateOffsetQuery(OffsetAdapter.dslOffsetToOffset(offset)).statements());
+                    asJavaIterableConverter(offsetDao.updateOffsetQuery(OffsetAdapter.dslOffsetToOffset(offset)).statements()).asJava();
 
             for (String statement : sqlStatements) {
                 log.debug("Updating offset to {} in JpaReadsideHandler {} with statement: {}",

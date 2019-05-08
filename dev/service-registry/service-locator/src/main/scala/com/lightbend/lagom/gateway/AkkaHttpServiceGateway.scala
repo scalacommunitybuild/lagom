@@ -53,19 +53,19 @@ class AkkaHttpServiceGateway(
   val http = Http()
 
   private val handler = Flow[HttpRequest].mapAsync(1) { request =>
-    log.debug("Routing request {}", request)
+    log.debug("Routing request {}", request: Any)
 
     val path = request.uri.path.toString()
     (registry ? Route(request.method.name, path, None)).mapTo[RouteResult].flatMap {
       case Found(serviceUri) =>
-        log.debug("Request is to be routed to {}", serviceUri)
+        log.debug("Request is to be routed to {}", serviceUri: Any)
         val newUri = request.uri.withAuthority(serviceUri.getHost, serviceUri.getPort)
         request.header[UpgradeToWebSocket] match {
           case Some(upgrade) =>
             handleWebSocketRequest(request, newUri, upgrade)
           case None =>
 
-            val xForwardedHost = request.header[Host].to[Set].map { h => `X-Forwarded-Host`(h.host) }
+            val xForwardedHost = request.header[Host].to(Set).map { h => `X-Forwarded-Host`(h.host) }
             val newHostHeader = Set(Host(newUri.authority))
             val headers =
               filterHeaders(request.headers) ++
@@ -79,7 +79,7 @@ class AkkaHttpServiceGateway(
         }
       case NotFound(registryMap) =>
         log.debug("Sending not found response")
-        Future.successful(renderNotFound(request, path, registryMap.mapValues(_.serviceRegistryService)))
+        Future.successful(renderNotFound(request, path, registryMap.mapValues(_.serviceRegistryService).toMap))
     }
 
   }
@@ -105,7 +105,7 @@ class AkkaHttpServiceGateway(
         webSocketResponse.withHeaders(webSocketResponse.headers ++ filterHeaders(response.headers))
 
       case InvalidUpgradeResponse(response, cause) =>
-        log.debug("WebSocket upgrade response was invalid: {}", cause)
+        log.debug("WebSocket upgrade response was invalid: {}", cause: Any)
         response
     }
   }

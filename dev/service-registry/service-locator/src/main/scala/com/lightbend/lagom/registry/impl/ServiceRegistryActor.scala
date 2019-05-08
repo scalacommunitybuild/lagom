@@ -134,8 +134,8 @@ class InternalRouter {
     router = routerFunctions.foldLeft(PartialFunction.empty[Route, ServiceToRegister])(_ orElse _)
   }
 
-  private def serviceRouter(serviceName: String, registeredPortName: Option[String], uri: URI, service: ServiceRegistryService): Seq[PartialFunction[Route, ServiceToRegister]] = {
-    val routerFunctions: Seq[PartialFunction[Route, ServiceToRegister]] = service.acls.asScala.map {
+  private def serviceRouter(serviceName: String, registeredPortName: Option[String], uri: URI, service: ServiceRegistryService): scala.collection.Seq[PartialFunction[Route, ServiceToRegister]] = {
+    val routerFunctions: scala.collection.Seq[PartialFunction[Route, ServiceToRegister]] = service.acls.asScala.map {
       case acl =>
         acl.method().asScala -> acl.pathRegex().asScala.map(Pattern.compile)
     }.map {

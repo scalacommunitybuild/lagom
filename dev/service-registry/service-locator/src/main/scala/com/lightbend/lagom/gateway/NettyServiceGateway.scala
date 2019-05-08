@@ -117,19 +117,19 @@ class NettyServiceGateway(coordinatedShutdown: CoordinatedShutdown, config: Serv
       msg match {
         case request: HttpRequest =>
           if (currentRequest == null) {
-            log.debug("Routing request {}", request)
+            log.debug("Routing request {}", request: Any)
             currentRequest = request
             val path = URI.create(request.uri).getPath
 
             implicit val ec = ctx.executor
             (registry ? Route(request.method.name, path, None)).mapTo[RouteResult].map {
               case Found(serviceAddress) =>
-                log.debug("Request is to be routed to {}, getting connection from pool", serviceAddress)
+                log.debug("Request is to be routed to {}, getting connection from pool", serviceAddress: Any)
                 val pool = poolMap.get(new InetSocketAddress(serviceAddress.getHost, serviceAddress.getPort))
                 currentPool = pool
                 currentPool.acquire().toScala.onComplete {
                   case Success(channel) =>
-                    log.debug("Received connection from pool for {}", serviceAddress)
+                    log.debug("Received connection from pool for {}", serviceAddress: Any)
                     // Connection was closed before we got a channel to talk to, release it immediately
                     if (currentPool == null) {
                       log.debug("Connection closed before channel received from pool, releasing channel")
@@ -162,7 +162,7 @@ class NettyServiceGateway(coordinatedShutdown: CoordinatedShutdown, config: Serv
                 log.debug("Sending not found response")
                 ReferenceCountUtil.release(currentRequest)
                 currentRequest = null
-                ctx.writeAndFlush(renderNotFound(request, path, registryMap.mapValues(_.serviceRegistryService)))
+                ctx.writeAndFlush(renderNotFound(request, path, registryMap.mapValues(_.serviceRegistryService).toMap))
                 flushPipeline()
             }.recover {
               case t =>
@@ -289,7 +289,7 @@ class NettyServiceGateway(coordinatedShutdown: CoordinatedShutdown, config: Serv
       }
 
       private def handleResponse(ctx: ChannelHandlerContext, response: HttpResponse) = {
-        log.debug("Handling response {}", response)
+        log.debug("Handling response {}", response: Any)
         // First check if it's a WebSocket response
         if (response.status == HttpResponseStatus.SWITCHING_PROTOCOLS) {
           if (response.headers().get(HttpHeaderNames.UPGRADE) == "websocket") {
@@ -469,7 +469,7 @@ class NettyServiceGateway(coordinatedShutdown: CoordinatedShutdown, config: Serv
       // Lazily initialize the header sequence using the Netty headers. It's OK
       // if we do this operation concurrently because the operation is idempotent.
       if (_headers == null) {
-        _headers = nettyHeaders.entries.asScala.map(h => h.getKey -> h.getValue)
+        _headers = nettyHeaders.entries.asScala.map(h => h.getKey -> h.getValue).toSeq
       }
       _headers
     }
@@ -479,7 +479,7 @@ class NettyServiceGateway(coordinatedShutdown: CoordinatedShutdown, config: Serv
       val value = nettyHeaders.get(key)
       if (value == null) scala.sys.error("Header doesn't exist") else value
     }
-    override def getAll(key: String): Seq[String] = nettyHeaders.getAll(key).asScala
+    override def getAll(key: String): Seq[String] = nettyHeaders.getAll(key).asScala.toSeq
   }
 
 }

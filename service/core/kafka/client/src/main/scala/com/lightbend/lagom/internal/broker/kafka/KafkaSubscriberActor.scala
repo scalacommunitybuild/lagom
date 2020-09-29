@@ -124,8 +124,8 @@ private[lagom] class KafkaSubscriberActor[Payload, SubscriberPayload](
 
     val committableOffsetFlow = Flow.fromGraph(GraphDSL.create(flow) { implicit builder => flow =>
       import GraphDSL.Implicits._
-      val unzip  = builder.add(Unzip[CommittableOffset, SubscriberPayload])
-      val zip    = builder.add(Zip[CommittableOffset, Done])
+      val unzip  = builder.add(Unzip[CommittableOffset, SubscriberPayload]())
+      val zip    = builder.add(Zip[CommittableOffset, Done]())
       val offset = builder.add(Flow[(CommittableOffset, Done)].map(_._1))
 
       // To allow the user flow to do its own batching, the offset side of the flow needs to effectively buffer

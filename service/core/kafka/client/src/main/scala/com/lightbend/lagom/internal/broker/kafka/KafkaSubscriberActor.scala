@@ -96,7 +96,7 @@ private[lagom] class KafkaSubscriberActor[Payload, SubscriberPayload](
   private def run(uri: Option[String]) = {
     val drainingControl: DrainingControl[Done] =
       atLeastOnce(uri)
-        .toMat(Committer.sink(consumerConfig.committerSettings))(DrainingControl.apply[Done])
+        .toMat(Committer.sink(consumerConfig.committerSettings))(DrainingControl.apply[Done](_, _))
         .run()
 
     CoordinatedShutdown(context.system).addTask(PhaseServiceUnbind, s"stop-$topicId-subscriber") { () =>
